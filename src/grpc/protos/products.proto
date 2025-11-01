@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package products;
+
+message Product {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  string category = 5;
+  string imageUrl = 6;
+  bool isActive = 7;
+  string createdAt = 8;
+}
+
+message CreateProductRequest { Product product = 1; }
+message CreateProductResponse { Product product = 1; }
+
+message GetProductsRequest {}
+message GetProductsResponse { repeated Product products = 1; }
+
+message GetProductByIdRequest { string id = 1; }
+message GetProductByIdResponse { Product product = 1; }
+
+message UpdateProductRequest { Product product = 1; }
+message UpdateProductResponse { Product product = 1; }
+
+message SoftDeleteProductRequest { string id = 1; }
+message SoftDeleteProductResponse { bool success = 1; }
+
+service Products {
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
+  rpc GetProducts(GetProductsRequest) returns (GetProductsResponse);
+  rpc GetProductById(GetProductByIdRequest) returns (GetProductByIdResponse);
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+  rpc SoftDeleteProduct(SoftDeleteProductRequest) returns (SoftDeleteProductResponse);
+}

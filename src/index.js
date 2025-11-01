@@ -1,12 +1,20 @@
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/mongo');
+const mongoose = require('mongoose');
+const { getServer } = require('./grpc/server');
+const restAdapter = require('./http/restAdapter');
+const upload = require('./middleware/upload');
+const { createProduct } = require('./services/productService');
+const grpc = require('@grpc/grpc-js');
 
 const app = express();
 app.use(express.json());
+app.use('/', restAdapter);
 
-const upload = require('./middleware/upload');
-const { createProduct } = require('./services/productService');
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/censudex_products';
+const PORT = process.env.PORT || 3001;
+const GRPC_PORT = process.env.GRPC_PORT || 50051;
 
 
 
@@ -123,18 +131,64 @@ app.delete('/products/:id', async (req, res) => {
 });
 
 
-
-// Conexión a la base de datos y arranque del servidor
-const PORT = process.env.PORT || 3001;
+//
+//async function start() {
+//  await mongoose.connect(MONGO_URI);
+//  console.log('✅ Conectado a MongoDB');
+//
+//  // Servidor gRPC
+//  const server = getServer();
+//  server.bindAsync(`0.0.0.0:${GRPC_PORT}`, grpc.ServerCredentials.createInsecure(), (err) => {
+//    if (err) throw err;
+//    server.start();
+//    console.log(`🔗 Servidor gRPC escuchando en puerto ${GRPC_PORT}`);
+//  });
+//  // Servidor HTTP (REST Adapter)
+//  app.listen(PORT, () => {
+//    console.log(`🚀 Servidor HTTP (REST Adapter) en http://localhost:${PORT}`);
+//  });
+//}
+//
+//start().catch((err) => {
+//  console.error('Error al iniciar el servicio:', err);
+//  process.exit(1);
+//});
+//
+//// Conexión a la base de datos y arranque del servidor
+//async function startServer() {
+//  await connectDB();
+//  app.listen(PORT, () => {
+//    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+//  });
+//}
+//
+//startServer().catch(err => {
+//  console.error('Error al iniciar el servidor:', err);
+//  process.exit(1);
+//});
 
 async function startServer() {
-  await connectDB();
-  app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  });
+  try {
+    await mongoose.connect(MONGO_URI);
+    console.log('✅ Conectado a MongoDB');
+
+    // Servidor HTTP (Express)
+    app.listen(PORT, () => {
+      console.log(`🌐 Servidor HTTP escuchando en http://localhost:${PORT}`);
+    });
+
+    // 🔗 Servidor gRPC
+    const grpcServer = getServer();
+    grpcServer.bindAsync(`0.0.0.0:${GRPC_PORT}`, grpc.ServerCredentials.createInsecure(), (err) => {
+      if (err) throw err;
+      grpcServer.start();
+      console.log(`💬 Servidor gRPC escuchando en puerto ${GRPC_PORT}`);
+    });
+
+  } catch (err) {
+    console.error('❌ Error al iniciar el servidor:', err);
+    process.exit(1);
+  }
 }
 
-startServer().catch(err => {
-  console.error('Error al iniciar el servidor:', err);
-  process.exit(1);
-});
+startServer();
