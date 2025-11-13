@@ -13,7 +13,7 @@ Se integra en la **API Gateway (Ocelot)**, donde se maneja toda la **autenticaci
 * Crear producto (`POST /products`)
 * Listar todos los productos (`GET /products`)
 * Buscar producto por ID (`GET /products/:id`)
-* Editar producto (`PUT /products/:id`)
+* Editar producto (`PATCH /products/:id`)
 * Eliminar producto (`DELETE /products/:id`)
 * Subida de imágenes con **Cloudinary**
 * Endpoints equivalentes gRPC expuestos mediante `/grpc/...`
@@ -134,7 +134,7 @@ GET /products/:id
 #### Editar producto
 
 ```http
-PUT /products/:id
+PATCH /products/:id
 ```
 
 #### Eliminar producto (soft delete)
