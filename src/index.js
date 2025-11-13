@@ -72,8 +72,8 @@ app.get('/products/:id', async (req, res) => {
 });
 
 
-// Endpoint para actualizar un producto por su ID (PUT /products/:id)
-app.put('/products/:id', upload.single('image'), async (req, res) => {
+// Endpoint para actualizar un producto por su ID (PATCH /products/:id)
+app.patch('/products/:id', upload.single('image'), async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
     const existing = await Product.findOne({ id: req.params.id });
