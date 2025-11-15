@@ -4,7 +4,7 @@ Microservicio encargado de la **gestión de productos** para el sistema Censudex
 Permite crear, visualizar, editar y eliminar productos, además de subir imágenes mediante **Cloudinary**.
 
 Este servicio se comunica internamente mediante **gRPC**, y externamente mediante **HTTP (REST Adapter)**.
-Se integra en la **API Gateway (Ocelot)**, donde se maneja toda la **autenticación y autorización**.
+Se integra en la **API Gateway**, donde se maneja toda la **autenticación y autorización**.
 
 ---
 
@@ -43,7 +43,15 @@ cd censudex-products-service
 
 ---
 
-### 2. Configurar variables de entorno
+### 2. Instalar dependencias
+
+```bash
+npm install
+```
+
+---
+
+### 3. Configurar variables de entorno
 
 Crea un archivo `.env` en la raíz con el siguiente contenido:
 
@@ -62,7 +70,7 @@ CLOUDINARY_API_SECRET=tu_api_secret
 
 ---
 
-### 3. Construir y levantar contenedores
+### 4. Construir y levantar contenedores
 
 ```bash
 docker compose up -d --build
@@ -89,7 +97,7 @@ Cuando el servicio esté listo, deberías ver:
 
 ---
 
-### 4. Poblar la base de datos (Seeder)
+### 5. Poblar la base de datos (Seeder)
 
 Puedes insertar algunos productos de ejemplo ejecutando:
 
@@ -174,7 +182,7 @@ El proyecto utiliza Docker Compose con dos contenedores principales:
 
 ## 📖 Mini manual de uso
 
-1. Clonar el repositorio y configurar `.env`
+1. Clonar el repositorio, instalar dependencias y configurar `.env`
 2. Ejecutar `docker compose up -d`
 3. (Opcional) Ejecutar el seeder con `npm run seed`
 4. Probar los endpoints con Postman:
@@ -182,7 +190,7 @@ El proyecto utiliza Docker Compose con dos contenedores principales:
    * `GET http://localhost:3001/products`
    * `POST http://localhost:3001/products`
    * `GET http://localhost:3001/grpc/products`
-5. Conectar este servicio a la API Gateway (Ocelot)
+5. Conectar este servicio a la API Gateway
 
 ---
 
